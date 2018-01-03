@@ -18,7 +18,7 @@ app = Flask(__name__)
 bot = telegram.Bot(token=API_TOKEN)
 machine = TocMachine(
     states=[
-        'blank',
+        # 'blank',
         'user',
         'boring',
         # customer side
@@ -49,12 +49,12 @@ machine = TocMachine(
         'burgerkingcheck'
     ],
     transitions=[
-        {
-            'trigger': 'advance',
-            'source': 'blank',
-            'dest': 'user',
-            'conditions': 'is_going_to_user'
-        },
+        # {
+        #     'trigger': 'advance',
+        #     'source': 'blank',
+        #     'dest': 'user',
+        #     'conditions': 'is_going_to_user'
+        # },
         {
             'trigger': 'advance',
             'source': 'user',
@@ -271,7 +271,7 @@ machine = TocMachine(
             'conditions': 'go_back_to_user'
         }
     ],
-    initial='blank',
+    initial='user',
     auto_transitions=False,
     show_conditions=True,
 )

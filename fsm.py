@@ -33,104 +33,98 @@ def update_data_of_db(query_name,new_num,isNext):
     db.close()
 
 def read_data_from_db(update,query_name):
-        db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
+    db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
 
-        # prepare a cursor object using cursor() method
-        cursor = db.cursor()
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
 
         # Prepare SQL query to INSERT a record into the database.
-        sql = "SELECT * FROM shops \
-            WHERE name = '%s'" %(query_name)
-        try:
-            # Execute the SQL command
-            cursor.execute(sql)
-            # Fetch all the rows in a list of lists.
-            results = cursor.fetchall()
-            for row in results:
-                theid = row[0]
-                name = row[1]
-                passwd = row[2]
-                count = row[3]
-
-                # Now print fetched result
-                print ("theid = %d,name = %s,passwd = %d,count = %d" % \
-                        (theid, name, passwd, count))
-                
-                update.message.reply_text('目前號碼： %d' %count)
-        except:
-            print ("Error: unable to fetch data")
-
-        # disconnect from server
-        db.close()
+    sql = "SELECT * FROM shops \
+        WHERE name = '%s'" %(query_name)
+    try:
+        # Execute the SQL command
+        cursor.execute(sql)
+        # Fetch all the rows in a list of lists.
+        results = cursor.fetchall()
+        for row in results:
+            theid = row[0]
+            name = row[1]
+            passwd = row[2]
+            count = row[3]
+            # Now print fetched result
+            print ("theid = %d,name = %s,passwd = %d,count = %d" % \
+                    (theid, name, passwd, count))
+            
+            update.message.reply_text('目前號碼： %d' %count)
+    except:
+        print ("Error: unable to fetch data")
+    # disconnect from server
+    db.close()
 
 def read_data_on_verify(update,bot,chat_id,query_name):
-        db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
+    db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
 
-        # prepare a cursor object using cursor() method
-        cursor = db.cursor()
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
 
-        # Prepare SQL query to INSERT a record into the database.
-        sql = "SELECT * FROM shops \
-            WHERE name = '%s'" %(query_name)
-        try:
-            # Execute the SQL command
-            cursor.execute(sql)
-            # Fetch all the rows in a list of lists.
-            results = cursor.fetchall()
-            for row in results:
-                theid = row[0]
-                name = row[1]
-                passwd = row[2]
-                count = row[3]
+    # Prepare SQL query to INSERT a record into the database.
+    sql = "SELECT * FROM shops \
+        WHERE name = '%s'" %(query_name)
+    try:
+        # Execute the SQL command
+        cursor.execute(sql)
+        # Fetch all the rows in a list of lists.
+        results = cursor.fetchall()
+        for row in results:
+            theid = row[0]
+            name = row[1]
+            passwd = row[2]
+            count = row[3]
+            # Now print fetched result
+            print ("theid = %d,name = %s,passwd = %d,count = %d" % \
+                    (theid, name, passwd, count))
+            custom_keyboard = [['下一位','重設號碼']]
+            reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
+            bot.send_message(chat_id=chat_id, text='目前號碼：%d' %count,reply_markup=reply_markup)
+            # update.message.reply_text('目前號碼： %d' %count)
+    except:
+        print ("Error: unable to fetch data")
 
-                # Now print fetched result
-                print ("theid = %d,name = %s,passwd = %d,count = %d" % \
-                        (theid, name, passwd, count))
-                custom_keyboard = [['下一位','重設號碼']]
-                reply_markup = telegram.ReplyKeyboardMarkup(custom_keyboard)
-                bot.send_message(chat_id=chat_id, text='目前號碼：%d' %count,reply_markup=reply_markup)
-                # update.message.reply_text('目前號碼： %d' %count)
-        except:
-            print ("Error: unable to fetch data")
-
-        # disconnect from server
-        db.close()
+    # disconnect from server
+    db.close()
 
 def verify_from_db(update,query_passwd):
-        global current_shop
-        global verify_flag
-        db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
+    global current_shop
+    global verify_flag
+    db = pymysql.connect("localhost","chatbot","chatbot","BOTDB" )
 
-        # prepare a cursor object using cursor() method
-        cursor = db.cursor()
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
 
-        # Prepare SQL query to INSERT a record into the database.
-        sql = "SELECT * FROM shops \
-            WHERE passwd = '%s'" %(query_passwd)
-        try:
-            # Execute the SQL command
-            cursor.execute(sql)
-            # Fetch all the rows in a list of lists.
-            results = cursor.fetchall()
-            for row in results:
-                theid = row[0]
-                name = row[1]
-                current_shop = row[1]
-                passwd = row[2]
-                count = row[3]
+    # Prepare SQL query to INSERT a record into the database.
+    sql = "SELECT * FROM shops \
+       WHERE passwd = '%s'" %(query_passwd)
+    try:
+        # Execute the SQL command
+        cursor.execute(sql)
+        # Fetch all the rows in a list of lists.
+        results = cursor.fetchall()
+        for row in results:
+            theid = row[0]
+            name = row[1]
+            current_shop = row[1]
+            passwd = row[2]
+            count = row[3]
+            # Now print fetched result
+            print ("current_shop = %s" %current_shop)
+            update.message.reply_text('歡迎回來： %s' %current_shop)
+            verify_flag = 1
+    except:
+        verify_flag = 0
+        print ("Error: unable to fetch data2")
 
-                # Now print fetched result
-                print ("current_shop = %s" %current_shop)
-                update.message.reply_text('歡迎回來： %s' %current_shop)
-                verify_flag = 1
-        except:
-            verify_flag = 0
-            print ("Error: unable to fetch data2")
-
-        # disconnect from server
-        db.close()
-
-
+    # disconnect from server
+    db.close()
 
 
 class TocMachine(GraphMachine):
@@ -142,8 +136,6 @@ class TocMachine(GraphMachine):
 
     def go_back_to_user(self, update,bot,chat_id):
         text = update.message.text
-        print('inin')
-        print(text)
         return text.lower() == 'exit'
 
     def reset_done(self,update,bot,chat_id):
@@ -163,9 +155,9 @@ class TocMachine(GraphMachine):
 
     # --- customer side
 
-    def is_going_to_user(self, update,bot,chat_id):
-        text = update.message.text
-        return True
+    # def is_going_to_user(self, update,bot,chat_id):
+    #     text = update.message.text
+    #     return True
 
     def is_going_to_customer(self, update,bot,chat_id):
         text = update.message.text
@@ -251,7 +243,7 @@ class TocMachine(GraphMachine):
 
     def on_enter_user(self, update,bot,chat_id):
         reply_markup = telegram.ReplyKeyboardRemove()
-        bot.send_message(chat_id=chat_id, text="歡迎使用排隊小幫手！\n如果您是消費者請輸入 <b>1</b>\n如果您是店家請輸入 <b>2</b>\n如果你很無聊請輸入 <b>3</b>\n接下來每個步驟都將有指引!\n(在任何時候輸入<b> exit </b>可回到起始畫面)", parse_mode=telegram.ParseMode.HTML , reply_markup=reply_markup)
+        bot.send_message(chat_id=chat_id, text="歡迎使用排隊小幫手！\n如果您是消費者請輸入 <b>1</b>\n如果您是店家請輸入 <b>2</b>\n如果您很無聊請輸入 <b>3</b>\n接下來每個步驟都將有指引!\n(在任何時候輸入<b> exit </b>可回到起始畫面)", parse_mode=telegram.ParseMode.HTML , reply_markup=reply_markup)
 
     def on_enter_boring(self, update,bot,chat_id):
         reply_markup = telegram.ReplyKeyboardRemove()
